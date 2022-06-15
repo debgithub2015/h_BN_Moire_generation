@@ -1,0 +1,90 @@
+! This program creates supercell of desired number of
+! atoms
+! Created by DC 06/16/2014
+       PROGRAM supercell
+       IMPLICIT NONE
+
+       INTEGER :: i,j,k,nfcc,nbcc,ncub,nhcp
+       INTEGER,PARAMETER :: na=4,nb=4,nc=4  !! No. of boxes
+       REAL*8  u(12,3),posNewCnt(3),sqrt3,caratio
+         
+       sqrt3=SQRT(3.d0)
+       caratio=1.633d0
+       
+       u(1,:)=(/0.5d0,0.5d0,0.d0/) !!fcc shifting vector 
+                                   !!simple cubic shifting vector
+       u(2,:)=(/0.5d0,0.d0,0.5d0/) !!fcc shifting vector
+       u(3,:)=(/0.d0,0.5d0,0.5d0/) !!fcc shifting vector
+       u(4,:)=(/0.5d0,0.5d0,0.5d0/) !!bcc shifting vector
+    
+       u(5,:)=(/1.0d0/sqrt3,0.d0,caratio*0.5d0/) !! hcp shifting vector
+       u(6,:)=(/0.d0,1.d0,0.d0/)
+       u(7,:)=(/-2.d0/sqrt3,0.d0,caratio*0.5d0/)
+       u(8,:)=(/0.d0,0.d0,caratio/)
+       u(9,:)=(/5.d0*0.5d0/sqrt3,0.5d0,0.5d0/)
+       u(10,:)=(/sqrt3,0.d0,0.d0/)
+       u(11,:)=(/0.d0,1.d0,caratio/)
+       u(12,:)=(/0.d0,2.d0,0.d0/)
+
+       open(1,file='fccsupercell.xyz',status='unknown')
+       open(2,file='bccsupercell.xyz',status='unknown') 
+       open(3,file='scubsupercell.xyz',status='unknown')
+       open(4,file='hcpsupercell.xyz',status='unknown')
+       nfcc= na*nb*nc*4
+       write(1,*) nfcc  !!# of particles in fcc
+       nbcc= na*nb*nc*2
+       write(2,*) nbcc  !!# of particles in bcc
+       ncub=na*nb*nc
+       write(3,*) ncub  !!# of particles in simple cube
+       nhcp=na*nb*nc*9
+       write(4,*) nhcp
+
+       do i=1,na
+       do j=1,nb
+       do k=1,nc
+            
+            posNewCnt(1)=1.0d0/REAL(na)+REAL(i-1)/REAL(na)
+            posNewCnt(2)=1.0d0/REAL(nb)+REAL(j-1)/REAL(nb)
+            posNewCnt(3)=1.0d0/REAL(nc)+REAL(k-1)/REAL(nc)
+           
+            write(3,"(3f16.3)") posNewCnt(:)    
+      
+       end do
+       end do
+       end do       
+
+
+       do i=1,na
+           posNewCnt(1)=REAL(i-1)/REAL(na)
+       do j=1,nb
+           posNewCnt(2)=REAL(j-1)/REAL(nb)
+       do k=1,na
+           posNewCnt(3)=REAL(k-1)/REAL(nc)
+
+           write(1,"(3f16.3)") posNewCnt(:)
+           write(1,"(3f16.3)") posNewCnt(:)+u(1,:)
+           write(1,"(3f16.3)") posNewCnt(:)+u(2,:)
+           write(1,"(3f16.3)") posNewCnt(:)+u(3,:)
+           write(2,"(3f16.3)") posNewCnt(:)
+           write(2,"(3f16.3)") posNewCnt(:)+u(4,:)
+           write(4,"(3f16.3)") posNewCnt(:)
+           write(4,"(3f16.3)") posNewCnt(:)+u(5,:)
+           write(4,"(3f16.3)") posNewCnt(:)+u(6,:)
+           write(4,"(3f16.3)") posNewCnt(:)+u(7,:)
+           write(4,"(3f16.3)") posNewCnt(:)+u(8,:)
+           write(4,"(3f16.3)") posNewCnt(:)+u(9,:)
+           write(4,"(3f16.3)") posNewCnt(:)+u(10,:)
+           write(4,"(3f16.3)") posNewCnt(:)+u(11,:)
+           write(4,"(3f16.3)") posNewCnt(:)+u(12,:)
+
+      end do
+      end do
+      end do
+
+      close(1)
+      close(2)
+      close(3)
+      close(4)
+
+       end
+
